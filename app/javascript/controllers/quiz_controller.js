@@ -1,13 +1,14 @@
 import { Controller } from "@hotwired/stimulus";
+import L from "leaflet";
 
 // Connects to data-controller="quiz"
 export default class extends Controller {
   static values = {
     cities: Array,
-    cityLookup: Object,
+    cityCoordinates: Object,
   };
 
-  static targets = ["input", "results", "count"];
+  static targets = ["input", "results", "count", "map"];
 
   normalize(text) {
     return text
@@ -36,7 +37,7 @@ export default class extends Controller {
     }
 
     this.foundCities.push(value);
-    this.renderFoundCity(this.cityLookupValue[value]);
+    this.addMarker(value);
 
     this.countTarget.textContent = this.foundCities.length;
     this.inputTarget.value = "";
@@ -49,7 +50,22 @@ export default class extends Controller {
 
     this.resultsTarget.appendChild(li);
   }
+
+  addMarker(cityKey) {
+    const city = this.cityCoordinatesValue[cityKey];
+
+    if (!city) return;
+
+    this.renderFoundCity(city.name);
+    L.marker([city.latitude, city.longitude]).addTo(this.map);
+  }
   connect() {
     this.foundCities = [];
+
+    this.map = L.map(this.mapTarget).setView([39.0, 35.0], 6);
+
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap contributors",
+    }).addTo(this.map);
   }
 }

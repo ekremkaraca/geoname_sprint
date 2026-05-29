@@ -1,3 +1,5 @@
+@import url("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css");
+
 body {
     max-width: 900px;
     margin: 2rem auto;

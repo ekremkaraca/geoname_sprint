@@ -22,4 +22,14 @@ class Quiz < ApplicationRecord
       hash[city.normalized_name] = city.name
     end
   end
+
+  def city_coordinates
+    cities.each_with_object({}) do |city, hash|
+      hash[city.normalized_name] = {
+        name: city.name,
+        latitude: city.latitude,
+        longitude: city.longitude
+      }
+    end
+  end
 end

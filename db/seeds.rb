@@ -14,7 +14,10 @@ cities = [
   { name: "Adana", latitude: 37.0000, longitude: 35.3213, population: 2_300_000, aliases: [] },
   { name: "Gaziantep", latitude: 37.0662, longitude: 37.3833, population: 2_100_000, aliases: [ "Antep" ] },
   { name: "Şanlıurfa", latitude: 37.1591, longitude: 38.7969, population: 2_200_000, aliases: [ "Urfa", "Sanliurfa" ] },
-  { name: "Diyarbakır", latitude: 37.9144, longitude: 40.2306, population: 1_800_000, aliases: [ "Diyarbakir" ] }
+  { name: "Diyarbakır", latitude: 37.9144, longitude: 40.2306, population: 1_800_000, aliases: [ "Diyarbakir" ] },
+  { name: "Muğla", latitude: 37.2167, longitude: 28.3667, population: 1_099_000, aliases: [ "Mugla" ] },
+  { name: "Ula", latitude: 37.1036, longitude: 28.4147, population: 27_300, aliases: [] },
+  { name: "Karabörtlen", latitude: 37.0405, longitude: 28.5054, population: 1_600, aliases: [ "Karabortlen"] }
 ]
 
 cities.each do |attrs|
