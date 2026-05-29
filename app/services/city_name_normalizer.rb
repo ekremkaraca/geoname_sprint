@@ -5,7 +5,8 @@ class CityNameNormalizer
     "ş" => "s",
     "ı" => "i",
     "ö" => "o",
-    "ü" => "u"
+    "ü" => "u",
+    "İ" => "i"
   }.freeze
 
   def self.call(value)

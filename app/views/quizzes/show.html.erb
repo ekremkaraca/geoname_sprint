@@ -1,28 +1,29 @@
-<h1>
-  <%= @quiz.title %>
-</h1>
+<div
+  data-controller="quiz"
+  data-quiz-cities-value="<%= @quiz.normalized_city_names.to_json %>"
+  data-quiz-city-lookup-value="<%= @quiz.city_lookup.to_json %>"
+>
 
-<p>
-  Region:
-  <%= @quiz.region %>
-</p>
+  <h1><%= @quiz.title %></h1>
 
-<p>
-  Cities:
-  <%= @quiz.city_count %>
-</p>
+  <p>
+    Found:
+    <span data-quiz-target="count">
+      0
+    </span>
+    /
+    <%= @quiz.city_count %>
+  </p>
 
-<p>
-  Duration:
-  <%= @quiz.duration_minutes %> minutes
-</p>
+  <input
+    type="text"
+    placeholder="Enter a city..."
+    data-quiz-target="input"
+    data-action="keydown.enter->quiz#guess"
+    autocomplete="off"
+  >
 
-<h2>Preview</h2>
+  <ul data-quiz-target="results">
+  </ul>
 
-<ul>
-  <% @quiz.cities.limit(5).each do |city| %>
-    <li>
-      <%= city.name %>
-    </li>
-  <% end %>
-</ul>
+</div>

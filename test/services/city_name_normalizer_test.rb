@@ -10,4 +10,12 @@ class CityNameNormalizerTest < ActiveSupport::TestCase
   test "strips extra spaces" do
     assert_equal "izmir", CityNameNormalizer.call("  İzmir  ")
   end
+
+  test "strips punctuation" do
+    assert_equal "canakkale", CityNameNormalizer.call("Çanakkale.")
+  end
+
+  test "collapses internal spaces" do
+    assert_equal "istanbul", CityNameNormalizer.call("Istanbul  ")
+  end
 end

@@ -12,4 +12,14 @@ class Quiz < ApplicationRecord
   def duration_minutes
     duration_seconds / 60
   end
+
+  def normalized_city_names
+    cities.pluck(:normalized_name)
+  end
+
+  def city_lookup
+    cities.each_with_object({}) do |city, hash|
+      hash[city.normalized_name] = city.name
+    end
+  end
 end
