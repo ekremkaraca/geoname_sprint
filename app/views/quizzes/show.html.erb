@@ -1,0 +1,28 @@
+<h1>
+  <%= @quiz.title %>
+</h1>
+
+<p>
+  Region:
+  <%= @quiz.region %>
+</p>
+
+<p>
+  Cities:
+  <%= @quiz.city_count %>
+</p>
+
+<p>
+  Duration:
+  <%= @quiz.duration_minutes %> minutes
+</p>
+
+<h2>Preview</h2>
+
+<ul>
+  <% @quiz.cities.limit(5).each do |city| %>
+    <li>
+      <%= city.name %>
+    </li>
+  <% end %>
+</ul>
