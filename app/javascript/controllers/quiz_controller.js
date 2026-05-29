@@ -5,6 +5,8 @@ import L from "leaflet";
 export default class extends Controller {
   static values = {
     cities: Array,
+    cityLookup: Object,
+    guessLookup: Object,
     cityCoordinates: Object,
   };
 
@@ -13,6 +15,7 @@ export default class extends Controller {
   normalize(text) {
     return text
       .trim()
+      .replaceAll("İ", "i")
       .toLowerCase()
       .replaceAll("ç", "c")
       .replaceAll("ğ", "g")
@@ -27,19 +30,20 @@ export default class extends Controller {
   guess() {
     const rawValue = this.inputTarget.value;
     const value = this.normalize(rawValue);
+    const cityKey = this.guessLookupValue[value];
 
-    if (!this.citiesValue.includes(value)) {
+    if (!cityKey) return;
+
+    if (this.foundCities.has(cityKey)) {
       return;
     }
 
-    if (this.foundCities.includes(value)) {
-      return;
-    }
+    this.foundCities.add(cityKey);
 
-    this.foundCities.push(value);
-    this.addMarker(value);
+    this.renderFoundCity(this.cityLookupValue[cityKey]);
+    this.addMarker(cityKey);
 
-    this.countTarget.textContent = this.foundCities.length;
+    this.countTarget.textContent = this.foundCities.size;
     this.inputTarget.value = "";
   }
 
@@ -56,11 +60,10 @@ export default class extends Controller {
 
     if (!city) return;
 
-    this.renderFoundCity(city.name);
     L.marker([city.latitude, city.longitude]).addTo(this.map);
   }
   connect() {
-    this.foundCities = [];
+    this.foundCities = new Set();
 
     this.map = L.map(this.mapTarget).setView([39.0, 35.0], 6);
 
