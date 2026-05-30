@@ -17,16 +17,19 @@ class Quiz < ApplicationRecord
     cities.pluck(:normalized_name)
   end
 
-
   def city_lookup
     cities.each_with_object({}) do |city, hash|
-      hash[city.normalized_name] = city.name
+      hash[
+        CityNameNormalizer.call(city.normalized_name)
+      ] = city.name
     end
   end
 
   def city_coordinates
     cities.each_with_object({}) do |city, hash|
-      hash[city.normalized_name] = {
+      hash[
+        CityNameNormalizer.call(city.normalized_name)
+      ] = {
         name: city.name,
         latitude: city.latitude,
         longitude: city.longitude
@@ -36,10 +39,11 @@ class Quiz < ApplicationRecord
 
   def city_guess_lookup
     cities.each_with_object({}) do |city, hash|
-      hash[city.normalized_name] = city.normalized_name
+      normalized = CityNameNormalizer.call(city.normalized_name)
+      hash[normalized] = normalized
 
       city.aliases.each do |city_alias|
-        hash[city_alias] = city.normalized_name
+        hash[CityNameNormalizer.call(city_alias)] = normalized
       end
     end
   end

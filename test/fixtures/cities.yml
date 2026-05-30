@@ -1,0 +1,31 @@
+sofia:
+  name: Sofia
+  normalized_name: Sofia
+  aliases:
+    - Sofia
+  latitude: 42.7000
+  longitude: 23.3300
+  population: 1_600_000
+  quiz: bulgaria
+
+varna:
+  name: Varna
+  normalized_name: Varna
+  aliases:
+    - Varna
+  latitude: 43.2167
+  longitude: 27.9167
+  population: 400_000
+  quiz: bulgaria
+
+haskovo:
+  name: Haskovo
+  normalized_name: Haskovo
+  aliases:
+    - Haskovo
+    - Hasköy
+    - Haskoy
+  latitude: 41.9333
+  longitude: 25.5667
+  population: 40_000
+  quiz: bulgaria

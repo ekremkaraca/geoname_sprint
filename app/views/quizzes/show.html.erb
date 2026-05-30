@@ -4,6 +4,8 @@
   data-quiz-city-lookup-value="<%= @quiz.city_lookup.to_json %>"
   data-quiz-guess-lookup-value="<%= @quiz.city_guess_lookup.to_json %>"
   data-quiz-city-coordinates-value="<%= @quiz.city_coordinates.to_json %>"
+  data-quiz-duration-value="<%= @quiz.duration_seconds %>"
+  data-quiz-city-count-value="<%= @quiz.city_count %>"
 >
 
   <h1><%= @quiz.title %></h1>
@@ -21,6 +23,13 @@
     </span>
     /
     <%= @quiz.city_count %>
+  </p>
+
+  <p>
+      Time left:
+      <span data-quiz-target="timer">
+          05:00
+      </span>
   </p>
 
   <input
