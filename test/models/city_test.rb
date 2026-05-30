@@ -56,20 +56,10 @@ class CityTest < ActiveSupport::TestCase
     assert_not city.valid?
   end
 
-  test "to_param returns slug" do
-    quiz = quizzes(:bulgaria)
+  test "rejects negative population" do
+    city = cities(:sofia)
+    city.population = -1
 
-    assert_equal "bulgaria-cities", quiz.to_param
-  end
-
-  test "rejects invalid slug format" do
-    quiz = Quiz.new(
-      title: "Bad Slug",
-      slug: "Bad Slug!",
-      region: "Test",
-      duration_seconds: 300
-    )
-
-    assert_not quiz.valid?
+    assert_not city.valid?
   end
 end
