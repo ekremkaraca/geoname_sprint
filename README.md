@@ -1,24 +1,46 @@
-# README
+# GeoName Sprint
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+A small Rails geography quiz game where players guess cities from a region and reveal them on a map.
 
-Things you may want to cover:
+## Stack
 
-* Ruby version
+- Ruby 4.0.5
+- Rails 8.1
+- PostgreSQL
+- Hotwire / Stimulus
+- Leaflet
+- OpenStreetMap tiles
 
-* System dependencies
+## Setup
 
-* Configuration
+```bash
+bin/setup
+bin/rails db:setup
+bin/rails server
+````
 
-* Database creation
+## Tests
 
-* Database initialization
+```bash
+bin/rails test
+bin/rails test:system
+bin/rubocop
+bundle exec brakeman --no-pager
+bin/bundler-audit check --update
+```
 
-* How to run the test suite
+## Current Features
 
-* Services (job queues, cache servers, search engines, etc.)
+* Slug-based quiz pages
+* City guessing
+* Alias support
+* Leaflet map markers
+* Countdown timer
+* Completion state
 
-* Deployment instructions
+## Known Limitations
 
-* ...
+* Game state is browser-only
+* No leaderboard yet
+* Map center is currently region-specific
+* External OSM tiles are used
