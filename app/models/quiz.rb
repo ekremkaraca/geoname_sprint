@@ -2,7 +2,10 @@ class Quiz < ApplicationRecord
   has_many :cities, dependent: :destroy
 
   validates :title, :slug, :region, :duration_seconds, presence: true
-  validates :slug, uniqueness: true
+  validates :slug,
+    uniqueness: true,
+    format: { with: /\A[a-z0-9\-]+\z/ }
+
   validates :duration_seconds, numericality: { greater_than: 0 }
 
   def city_count
@@ -50,5 +53,9 @@ class Quiz < ApplicationRecord
 
   def all_normalized_city_names
     city_guess_lookup.keys
+  end
+
+  def to_param
+    slug
   end
 end

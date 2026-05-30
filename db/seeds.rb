@@ -17,7 +17,7 @@ cities = [
   { name: "Diyarbakır", latitude: 37.9144, longitude: 40.2306, population: 1_800_000, aliases: [ "Diyarbakir" ] },
   { name: "Muğla", latitude: 37.2167, longitude: 28.3667, population: 1_099_000, aliases: [ "Mugla" ] },
   { name: "Ula", latitude: 37.1036, longitude: 28.4147, population: 27_300, aliases: [] },
-  { name: "Karabörtlen", latitude: 37.0405, longitude: 28.5054, population: 1_600, aliases: [ "Karabortlen"] }
+  { name: "Karabörtlen", latitude: 37.0405, longitude: 28.5054, population: 1_600, aliases: [ "Karabortlen" ] }
 ]
 
 cities.each do |attrs|
