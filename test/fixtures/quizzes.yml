@@ -3,3 +3,9 @@ bulgaria:
   slug: "bulgaria-cities"
   region: "Bulgaria"
   duration_seconds: 300
+
+bulgaria_short:
+  title: "Bulgaria Cities for shorter duration "
+  slug: "bulgaria-cities-short"
+  region: "Bulgaria"
+  duration_seconds: 3

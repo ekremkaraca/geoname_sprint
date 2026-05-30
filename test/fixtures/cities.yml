@@ -7,6 +7,15 @@ sofia:
   population: 1600000
   quiz: bulgaria
 
+sofia_short:
+  name: Sofia
+  normalized_name: sofia
+  aliases: []
+  latitude: 42.7000
+  longitude: 23.3300
+  population: 1600000
+  quiz: bulgaria_short
+
 varna:
   name: Varna
   normalized_name: varna
