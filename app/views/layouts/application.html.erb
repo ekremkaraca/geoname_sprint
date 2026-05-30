@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <title>GeoName Sprint</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
@@ -10,7 +11,20 @@
   </head>
 
   <body>
-    <main class="container">
+    <header class="topbar">
+      <%= link_to "GeoName Sprint", root_path, class: "brand-link" %>
+
+      <button
+        class="theme-toggle"
+        type="button"
+        data-theme-toggle
+        aria-label="Toggle light mode"
+      >
+        Light
+      </button>
+    </header>
+
+    <main class="app-shell">
       <%= yield %>
     </main>
   </body>

@@ -7,43 +7,52 @@
   data-quiz-duration-value="<%= @quiz.duration_seconds %>"
   data-quiz-city-count-value="<%= @quiz.city_count %>"
 >
+  <header class="game-header">
+    <div>
+      <%= link_to "All quizzes", root_path, class: "back-link" %>
+      <h1><%= @quiz.title %></h1>
+    </div>
 
-  <h1><%= @quiz.title %></h1>
+    <div class="scoreboard" aria-label="Quiz status">
+      <p>
+        Found:
+        <span data-quiz-target="count">0</span>/<%= @quiz.city_count %>
+      </p>
 
-  <div
-    id="map"
-    data-quiz-target="map"
-    style="height: 500px;"
-  ></div>
+      <p>
+        Time left:
+        <span data-quiz-target="timer">05:00</span>
+      </p>
+    </div>
+  </header>
 
-  <p>
-    Found:
-    <span data-quiz-target="count">
-      0
-    </span>
-    /
-    <%= @quiz.city_count %>
-  </p>
+  <section class="game-layout">
+    <div
+      id="map"
+      class="map-panel"
+      data-quiz-target="map"
+    ></div>
 
-  <p>
-      Time left:
-      <span data-quiz-target="timer">
-          05:00
-      </span>
-  </p>
+    <aside class="guess-panel">
+      <div>
+        <label for="city_guess">City guess</label>
+        <input
+          id="city_guess"
+          name="city_guess"
+          type="text"
+          placeholder="Enter a city..."
+          data-quiz-target="input"
+          data-action="keydown.enter->quiz#guess"
+          autocomplete="off"
+        >
+      </div>
 
-  <label for="city_guess">City guess</label>
-  <input
-    id="city_guess"
-    name="city_guess"
-    type="text"
-    placeholder="Enter a city..."
-    data-quiz-target="input"
-    data-action="keydown.enter->quiz#guess"
-    autocomplete="off"
-  >
-
-  <ul data-quiz-target="results">
-  </ul>
+      <div class="found-list">
+        <h2>Found cities</h2>
+        <ul data-quiz-target="results">
+        </ul>
+      </div>
+    </aside>
+  </section>
 
 </div>

@@ -1,21 +1,30 @@
-<h1>GeoName Sprint</h1>
+<header class="page-header">
+  <p class="eyebrow">Geography quiz</p>
+  <h1>GeoName Sprint</h1>
+  <p class="lede">Type as many city names as you can before the clock runs out.</p>
+</header>
 
-<p>Choose a quiz.</p>
+<div class="quiz-list" aria-label="Available quizzes">
+  <% @quizzes.each do |quiz| %>
+    <section class="quiz-card">
+      <div>
+        <h2>
+          <%= link_to quiz.title, quiz_path(quiz.slug), class: "quiz-card__link" %>
+        </h2>
+        <p class="muted">Find every city in this sprint.</p>
+      </div>
 
-<% @quizzes.each do |quiz| %>
-  <section>
-    <h2>
-      <%= link_to quiz.title, quiz_path(quiz.slug) %>
-    </h2>
+      <dl class="quiz-meta">
+        <div>
+          <dt>Cities</dt>
+          <dd><%= quiz.city_count %></dd>
+        </div>
 
-    <p>
-      <%= quiz.city_count %> cities
-    </p>
-
-    <p>
-      <%= quiz.duration_minutes %> minutes
-    </p>
-  </section>
-
-  <hr>
-<% end %>
+        <div>
+          <dt>Time</dt>
+          <dd><%= quiz.duration_minutes %> min</dd>
+        </div>
+      </dl>
+    </section>
+  <% end %>
+</div>
