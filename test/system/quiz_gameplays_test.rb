@@ -72,11 +72,22 @@ class QuizGameplaysTest < ApplicationSystemTestCase
     fill_in "City guess", with: "Sofia"
     send_keys :enter
 
-    sleep 4
-
-    assert_text "Time's up!"
+    assert_text "Time's up!", wait: 4
     assert_text "Missed Cities"
     assert_text "✗ Varna"
     assert_text "✗ Haskovo"
+  end
+
+  test "shows missed cities when time expires" do
+    visit quiz_path(quizzes(:bulgaria_short))
+
+    fill_in "City guess", with: "Sofia"
+    send_keys :enter
+
+    assert_text "Found: 1"
+
+    assert_text "Time's up!", wait: 5
+    assert_text "Missed Cities"
+    assert_text "✗ Varna"
   end
 end

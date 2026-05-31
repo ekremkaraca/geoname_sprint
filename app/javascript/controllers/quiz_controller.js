@@ -23,6 +23,7 @@ export default class extends Controller {
     "map",
     "timer",
     "percentage",
+    "outcome",
   ];
 
   normalize(text) {
@@ -111,46 +112,43 @@ export default class extends Controller {
     clearInterval(this.timerInterval);
 
     this.inputTarget.disabled = true;
-
-    console.log("finishQuiz called", reason);
+    this.inputTarget.placeholder = "Quiz finished.";
 
     const missed = this.missingCities();
 
-    console.log("missed cities", missed);
-
     this.showResults(reason, missed);
+  }
 
-    console.log("showResults completed");
+  getPercentage() {
+    return Math.round((this.foundCities.size / this.cityCountValue) * 100);
   }
 
   showPercentage() {
     if (!this.hasPercentageTarget) return;
 
-    const percentage = Math.round(
-      (this.foundCities.size / this.allCityNamesValue.length) * 100,
-    );
+    const percentage = this.getPercentage();
     this.percentageTarget.textContent = `${percentage}%`;
   }
 
   showResults(reason, missedCities) {
-    const heading = reason === "complete" ? "Congratulations!" : "Time's up!";
+    const title = reason === "complete" ? "Perfect run!" : "Time's up!";
+
+    this.outcomeTarget.hidden = false;
 
     this.outcomeTarget.innerHTML = `
-      <h3>${heading}</h3>
+      <h2>${title}</h2>
+      <p>You found ${this.foundCities.size} of ${this.cityCountValue} cities.</p>
+      <p>Score: ${this.getPercentage()}</p>
 
-      <p>
-        Found:
-        ${this.foundCities.size} /
-        ${this.allCityNamesValue.length}
-      </p>
-
-      <h4>Missed Cities</h4>
-      <ul>
-        ${missedCities.map((city) => `<li>✗ ${city}</li>`).join("")}
-      </ul>
+      ${
+        missedCities.length > 0
+          ? `<h3>Missed Cities</h3>
+            <ul>
+              ${missedCities.map((city) => `<li>✗ ${city}</li>`).join("")}
+            </ul>`
+          : `<p>No missed cities. Nicely done.</p>`
+      }
     `;
-
-    this.outcomeTarget.classList.remove("hidden");
   }
 
   startTimer() {
