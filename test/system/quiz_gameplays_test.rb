@@ -47,11 +47,9 @@ class QuizGameplaysTest < ApplicationSystemTestCase
   test "quiz completes when all cities are found" do
     visit quiz_path(quizzes(:bulgaria))
 
-    accept_alert do
-      %w[Sofia Varna Haskoy].each do |guess|
-        fill_in "City guess", with: guess
-        send_keys :enter
-      end
+    %w[Sofia Varna Haskoy].each do |guess|
+      fill_in "City guess", with: guess
+      send_keys :enter
     end
 
     assert_field "City guess", disabled: true
@@ -63,10 +61,22 @@ class QuizGameplaysTest < ApplicationSystemTestCase
 
     assert_text "Time left: 00:03"
 
-    accept_alert do
-      sleep 4
-    end
+    sleep 4
 
     assert_field "City guess", disabled: true
+  end
+
+  test "shows missed cities when quiz ends" do
+    visit quiz_path(quizzes(:bulgaria_short))
+
+    fill_in "City guess", with: "Sofia"
+    send_keys :enter
+
+    sleep 4
+
+    assert_text "Time's up!"
+    assert_text "Missed Cities"
+    assert_text "✗ Varna"
+    assert_text "✗ Haskovo"
   end
 end

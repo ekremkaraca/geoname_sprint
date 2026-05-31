@@ -12,9 +12,18 @@ export default class extends Controller {
     cityCount: Number,
     mapCenter: Array,
     mapZoom: Number,
+    allCityNames: Array,
   };
 
-  static targets = ["input", "results", "count", "map", "timer"];
+  static targets = [
+    "input",
+    "results",
+    "outcome",
+    "count",
+    "map",
+    "timer",
+    "percentage",
+  ];
 
   normalize(text) {
     return text
@@ -48,6 +57,7 @@ export default class extends Controller {
     this.addMarker(cityKey);
 
     this.countTarget.textContent = this.foundCities.size;
+    this.showPercentage();
 
     if (this.foundCities.size === this.cityCountValue) {
       this.finishQuiz("complete");
@@ -97,14 +107,50 @@ export default class extends Controller {
     if (this.finished) return;
 
     this.finished = true;
+
     clearInterval(this.timerInterval);
+
     this.inputTarget.disabled = true;
 
-    if (reason === "complete") {
-      alert(`Congratulations! You found all ${this.foundCities.size} cities.`);
-    } else {
-      alert(`Time's up! You found ${this.foundCities.size} cities.`);
-    }
+    console.log("finishQuiz called", reason);
+
+    const missed = this.missingCities();
+
+    console.log("missed cities", missed);
+
+    this.showResults(reason, missed);
+
+    console.log("showResults completed");
+  }
+
+  showPercentage() {
+    if (!this.hasPercentageTarget) return;
+
+    const percentage = Math.round(
+      (this.foundCities.size / this.allCityNamesValue.length) * 100,
+    );
+    this.percentageTarget.textContent = `${percentage}%`;
+  }
+
+  showResults(reason, missedCities) {
+    const heading = reason === "complete" ? "Congratulations!" : "Time's up!";
+
+    this.outcomeTarget.innerHTML = `
+      <h3>${heading}</h3>
+
+      <p>
+        Found:
+        ${this.foundCities.size} /
+        ${this.allCityNamesValue.length}
+      </p>
+
+      <h4>Missed Cities</h4>
+      <ul>
+        ${missedCities.map((city) => `<li>✗ ${city}</li>`).join("")}
+      </ul>
+    `;
+
+    this.outcomeTarget.classList.remove("hidden");
   }
 
   startTimer() {
@@ -121,6 +167,14 @@ export default class extends Controller {
         this.finishQuiz();
       }
     }, 1000);
+  }
+
+  missingCities() {
+    const foundName = new Set(
+      [...this.foundCities].map((key) => this.cityLookupValue[key]),
+    );
+
+    return this.allCityNamesValue.filter((city) => !foundName.has(city));
   }
 
   connect() {

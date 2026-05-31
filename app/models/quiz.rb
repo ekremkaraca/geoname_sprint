@@ -25,6 +25,10 @@ class Quiz < ApplicationRecord
     duration_seconds / 60
   end
 
+  def city_names
+    cities.pluck(:name)
+  end
+
   def normalized_city_names
     cities.pluck(:normalized_name)
   end

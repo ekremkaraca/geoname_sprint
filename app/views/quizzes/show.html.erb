@@ -8,6 +8,7 @@
   data-quiz-city-count-value="<%= @quiz.city_count %>"
   data-quiz-map-center-value="<%= @quiz.map_center.to_json %>"
   data-quiz-map-zoom-value="<%= @quiz.map_zoom %>"
+  data-quiz-all-city-names-value="<%= @quiz.city_names.to_json %>"
 >
   <header class="game-header">
     <div>
@@ -19,6 +20,11 @@
       <p>
         Found:
         <span data-quiz-target="count">0</span>/<%= @quiz.city_count %>
+      </p>
+
+      <p>
+          Percentage:
+          <span data-quiz-target="percentage">0%</span>
       </p>
 
       <p>
@@ -54,6 +60,8 @@
         <ul data-quiz-target="results">
         </ul>
       </div>
+
+      <div data-quiz-target="outcome" class="hidden"></div>
     </aside>
   </section>
 

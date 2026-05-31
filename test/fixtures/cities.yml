@@ -16,6 +16,25 @@ sofia_short:
   population: 1600000
   quiz: bulgaria_short
 
+varna_short:
+  name: Varna
+  normalized_name: varna
+  aliases: []
+  latitude: 43.2167
+  longitude: 27.9167
+  population: 400000
+  quiz: bulgaria_short
+
+haskovo_short:
+  name: Haskovo
+  normalized_name: haskovo
+  aliases:
+    - haskoy
+  latitude: 41.9333
+  longitude: 25.5667
+  population: 40000
+  quiz: bulgaria_short
+
 varna:
   name: Varna
   normalized_name: varna
