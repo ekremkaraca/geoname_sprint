@@ -7,6 +7,15 @@ class Quiz < ApplicationRecord
     format: { with: /\A[a-z0-9\-]+\z/ }
 
   validates :duration_seconds, numericality: { greater_than: 0 }
+  validates :map_latitude,
+    numericality: { greater_than_or_equal_to: -90, less_than_or_equal_to: 90 },
+    allow_nil: true
+
+  validates :map_longitude,
+    numericality: { greater_than_or_equal_to: -180, less_than_or_equal_to: 180 },
+    allow_nil: true
+
+  validates :map_zoom, numericality: { greater_than: 0 }
 
   def city_count
     cities.size
@@ -57,5 +66,16 @@ class Quiz < ApplicationRecord
 
   def to_param
     slug
+  end
+
+  def map_center
+    [
+      map_latitude || 39.0,
+      map_longitude || 35.0
+    ]
+  end
+
+  def map_zoom
+    self[:map_zoom] || 6
   end
 end

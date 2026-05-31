@@ -10,6 +10,8 @@ export default class extends Controller {
     cityCoordinates: Object,
     duration: Number,
     cityCount: Number,
+    mapCenter: Array,
+    mapZoom: Number,
   };
 
   static targets = ["input", "results", "count", "map", "timer"];
@@ -72,7 +74,10 @@ export default class extends Controller {
   }
 
   initializeMap() {
-    this.map = L.map(this.mapTarget).setView([39.0, 35.0], 6);
+    this.map = L.map(this.mapTarget).setView(
+      this.mapCenterValue,
+      this.mapZoomValue,
+    );
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "&copy; OpenStreetMap contributors",

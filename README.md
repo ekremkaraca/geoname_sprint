@@ -1,6 +1,15 @@
 # GeoName Sprint
 
-A small Rails geography quiz game where players guess cities from a region and reveal them on a map.
+A timed geography quiz built with Rails, Stimulus, Leaflet, and OpenStreetMap.
+
+## Features
+
+- City guessing gameplay
+- Alias support
+- Leaflet map markers
+- Countdown timer
+- Dark/light UI
+- System tests for gameplay
 
 ## Stack
 
@@ -8,6 +17,7 @@ A small Rails geography quiz game where players guess cities from a region and r
 - Rails 8.1
 - PostgreSQL
 - Hotwire / Stimulus
+- Importmap
 - Leaflet
 - OpenStreetMap tiles
 
@@ -29,18 +39,6 @@ bundle exec brakeman --no-pager
 bin/bundler-audit check --update
 ```
 
-## Current Features
+## Notes
 
-* Slug-based quiz pages
-* City guessing
-* Alias support
-* Leaflet map markers
-* Countdown timer
-* Completion state
-
-## Known Limitations
-
-* Game state is browser-only
-* No leaderboard yet
-* Map center is currently region-specific
-* External OSM tiles are used
+This app currently stores gameplay state in the browser. No leaderboard or user accounts yet.

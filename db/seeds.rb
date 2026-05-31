@@ -2,6 +2,9 @@ turkey = Quiz.find_or_create_by!(slug: "turkey-cities") do |quiz|
   quiz.title = "Turkey Cities"
   quiz.region = "Turkey"
   quiz.duration_seconds = 300
+  quiz.map_latitude = 39.0
+  quiz.map_longitude = 35.0
+  quiz.map_zoom = 6
 end
 
 cities = [
