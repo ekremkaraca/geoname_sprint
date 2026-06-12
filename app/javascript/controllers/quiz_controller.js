@@ -27,8 +27,8 @@ export default class extends Controller {
   normalize(text) {
     return text
       .trim()
-      .toLowerCase()
       .replaceAll("İ", "i")
+      .toLowerCase()
       .replaceAll("ç", "c")
       .replaceAll("ğ", "g")
       .replaceAll("ı", "i")

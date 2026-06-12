@@ -22,7 +22,7 @@ class Quiz < ApplicationRecord
   end
 
   def duration_minutes
-    duration_seconds / 60
+    (duration_seconds / 60).ceil
   end
 
   def city_names
@@ -35,17 +35,13 @@ class Quiz < ApplicationRecord
 
   def city_lookup
     cities.each_with_object({}) do |city, hash|
-      hash[
-        CityNameNormalizer.call(city.normalized_name)
-      ] = city.name
+      hash[city.normalized_name] = city.name
     end
   end
 
   def city_coordinates
     cities.each_with_object({}) do |city, hash|
-      hash[
-        CityNameNormalizer.call(city.normalized_name)
-      ] = {
+      hash[city.normalized_name] = {
         name: city.name,
         latitude: city.latitude,
         longitude: city.longitude
@@ -55,7 +51,7 @@ class Quiz < ApplicationRecord
 
   def city_guess_lookup
     cities.each_with_object({}) do |city, hash|
-      normalized = CityNameNormalizer.call(city.normalized_name)
+      normalized = city.normalized_name
       hash[normalized] = normalized
 
       city.aliases.each do |city_alias|
