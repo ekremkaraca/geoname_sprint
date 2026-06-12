@@ -1,6 +1,5 @@
 <div
   data-controller="quiz"
-  data-quiz-cities-value="<%= @quiz.normalized_city_names.to_json %>"
   data-quiz-city-lookup-value="<%= @quiz.city_lookup.to_json %>"
   data-quiz-guess-lookup-value="<%= @quiz.city_guess_lookup.to_json %>"
   data-quiz-city-coordinates-value="<%= @quiz.city_coordinates.to_json %>"
@@ -61,7 +60,7 @@
         </ul>
       </div>
 
-      <div data-quiz-target="outcome" class="hidden"></div>
+      <div data-quiz-target="outcome" hidden></div>
     </aside>
   </section>
 

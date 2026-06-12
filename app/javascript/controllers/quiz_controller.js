@@ -4,7 +4,6 @@ import L from "leaflet";
 // Connects to data-controller="quiz"
 export default class extends Controller {
   static values = {
-    cities: Array,
     cityLookup: Object,
     guessLookup: Object,
     cityCoordinates: Object,
@@ -16,14 +15,13 @@ export default class extends Controller {
   };
 
   static targets = [
-    "input",
-    "results",
-    "outcome",
     "count",
+    "input",
     "map",
-    "timer",
-    "percentage",
     "outcome",
+    "percentage",
+    "results",
+    "timer"
   ];
 
   normalize(text) {
