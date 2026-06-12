@@ -6,7 +6,9 @@ class QuizTest < ActiveSupport::TestCase
       title: "Turkey Cities",
       slug: "turkey-cities",
       region: "Turkey",
-      duration_seconds: 300
+      duration_seconds: 300,
+      map_latitude: 39.0,
+      map_longitude: 35.0
     )
 
     assert quiz.valid?
@@ -101,12 +103,6 @@ class QuizTest < ActiveSupport::TestCase
     assert_includes names, "haskoy"
   end
 
-  test "map_center returns default coordinates when nil" do
-    quiz = Quiz.new(map_latitude: nil, map_longitude: nil)
-
-    assert_equal [ 39.0, 35.0 ], quiz.map_center
-  end
-
   test "map_center returns actual coordinates when set" do
     quiz = Quiz.new(map_latitude: 42.7, map_longitude: 23.33)
 
@@ -165,19 +161,6 @@ class QuizTest < ActiveSupport::TestCase
     )
 
     assert_not quiz.valid?
-  end
-
-  test "allows nil map_latitude and map_longitude" do
-    quiz = Quiz.new(
-      title: "Nil Coords",
-      slug: "nil-coords",
-      region: "Test",
-      duration_seconds: 300,
-      map_latitude: nil,
-      map_longitude: nil
-    )
-
-    assert quiz.valid?, quiz.errors.full_messages.to_sentence
   end
 
   test "rejects out of range map_latitude" do
@@ -274,5 +257,16 @@ class QuizTest < ActiveSupport::TestCase
     end
 
     assert_empty City.where(id: city_ids)
+  end
+
+  test "destroying quiz removes cities" do
+    quiz = quizzes(:bulgaria)
+
+    assert_difference(
+      "City.count",
+      -quiz.cities.count
+    ) do
+      quiz.destroy
+    end
   end
 end

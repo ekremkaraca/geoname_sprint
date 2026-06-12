@@ -3,9 +3,13 @@ bulgaria:
   slug: "bulgaria-cities"
   region: "Bulgaria"
   duration_seconds: 300
+  map_latitude: 43.0
+  map_longitude: 25.0
 
 bulgaria_short:
   title: "Bulgaria Cities for shorter duration "
   slug: "bulgaria-cities-short"
   region: "Bulgaria"
   duration_seconds: 3
+  map_latitude: 43.0
+  map_longitude: 25.0

@@ -23,15 +23,4 @@ class QuizzesControllerTest < ActionDispatch::IntegrationTest
 
     assert_response :not_found
   end
-
-  test "destroying quiz removes cities" do
-    quiz = quizzes(:bulgaria)
-
-    assert_difference(
-      "City.count",
-      -quiz.cities.count
-    ) do
-      quiz.destroy
-    end
-  end
 end

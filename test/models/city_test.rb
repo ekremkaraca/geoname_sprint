@@ -33,7 +33,9 @@ class CityTest < ActiveSupport::TestCase
       title: "Another Quiz",
       slug: "another-quiz",
       region: "Test",
-      duration_seconds: 300
+      duration_seconds: 300,
+      map_latitude: 43.0,
+      map_longitude: 27.0
     )
 
     city = City.new(
