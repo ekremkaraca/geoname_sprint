@@ -11,25 +11,25 @@
 >
   <header class="game-header">
     <div>
-      <%= link_to "All quizzes", root_path, class: "back-link" %>
+      <%= link_to "All quizzes", root_path, class: "back-link secondary" %>
       <h1><%= @quiz.title %></h1>
     </div>
 
     <div class="scoreboard" aria-label="Quiz status">
-      <p>
-        Found:
+      <article>
+        <small>Found</small>
         <span data-quiz-target="count">0</span>/<%= @quiz.city_count %>
-      </p>
+      </article>
 
-      <p>
-          Percentage:
-          <span data-quiz-target="percentage">0%</span>
-      </p>
+      <article>
+        <small>Percentage</small>
+        <span data-quiz-target="percentage">0%</span>
+      </article>
 
-      <p>
-        Time left:
+      <article>
+        <small>Time left</small>
         <span data-quiz-target="timer">05:00</span>
-      </p>
+      </article>
     </div>
   </header>
 
@@ -40,7 +40,7 @@
       data-quiz-target="map"
     ></div>
 
-    <aside class="guess-panel">
+    <aside class="guess-panel" aria-label="Guess cities">
       <div>
         <label for="city_guess">City guess</label>
         <input
@@ -60,7 +60,7 @@
         </ul>
       </div>
 
-      <div data-quiz-target="outcome" hidden></div>
+      <article class="outcome-panel" data-quiz-target="outcome" hidden></article>
     </aside>
   </section>
 

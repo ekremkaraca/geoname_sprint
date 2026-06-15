@@ -6,7 +6,7 @@
 
 <div class="quiz-list" aria-label="Available quizzes">
   <% @quizzes.each do |quiz| %>
-    <section class="quiz-card">
+    <article class="quiz-card">
       <div>
         <h2>
           <%= link_to quiz.title, quiz_path(quiz.slug), class: "quiz-card__link" %>
@@ -25,6 +25,6 @@
           <dd><%= quiz.duration_minutes %> min</dd>
         </div>
       </dl>
-    </section>
+    </article>
   <% end %>
 </div>

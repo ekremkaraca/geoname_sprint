@@ -7,25 +7,35 @@
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
 
+    <%= stylesheet_link_tag "leaflet", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "pico.min", "data-turbo-track": "reload" %>
     <%= stylesheet_link_tag "application" %>
     <%= javascript_importmap_tags %>
   </head>
 
   <body>
-    <header class="topbar">
-      <%= link_to "GeoName Sprint", root_path, class: "brand-link" %>
+    <header class="topbar container">
+      <nav>
+        <ul>
+          <li><strong><%= link_to "GeoName Sprint", root_path, class: "brand-link" %></strong></li>
+        </ul>
 
-      <button
-        class="theme-toggle"
-        type="button"
-        data-theme-toggle
-        aria-label="Toggle light mode"
-      >
-        Light
-      </button>
+        <ul>
+          <li>
+            <button
+              class="theme-toggle secondary outline"
+              type="button"
+              data-theme-toggle
+              aria-label="Toggle light mode"
+            >
+              Light
+            </button>
+          </li>
+        </ul>
+      </nav>
     </header>
 
-    <main class="app-shell">
+    <main class="app-shell container">
       <%= yield %>
     </main>
   </body>

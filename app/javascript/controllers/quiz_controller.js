@@ -88,9 +88,13 @@ export default class extends Controller {
       this.mapZoomValue,
     );
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-      attribution: "&copy; OpenStreetMap contributors",
+    L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png", {
+      attribution: "&copy; OpenStreetMap &copy; CARTO",
+      subdomains: "abcd",
+      maxZoom: 19,
     }).addTo(this.map);
+
+    requestAnimationFrame(() => this.map.invalidateSize());
   }
 
   renderTimer() {
