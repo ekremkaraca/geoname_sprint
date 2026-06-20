@@ -2,83 +2,71 @@ require "faraday"
 require "json"
 
 namespace :geo do
-  desc "Generate pending city data using cloud OpenRouter API"
-  task :generate_cities, [ :country, :count ] => :environment do |t, args|
+  desc "Generate city data via OpenRouter and save to staging"
+  task :generate_cities, [ :country, :count ] => :environment do |_t, args|
     country = args[:country] || "Turkey"
     count = (args[:count] || 15).to_i
+
+    api_key = ENV["OPENROUTER_API_KEY"]
+    model  = ENV["OPENROUTER_MODEL"]
+
+    if api_key.blank?
+      puts "❌ Missing OPENROUTER_API_KEY environment variable."
+      exit 1
+    end
+
+    if model.blank?
+      puts "❌ Missing OPENROUTER_MODEL environment variable."
+      exit 1
+    end
 
     staging_dir = Rails.root.join("db", "raw_seeds")
     FileUtils.mkdir_p(staging_dir)
     file_path = staging_dir.join("pending_#{country.downcase}.json")
 
-    # Load the GBNF grammar file
-    grammar_path = Rails.root.join("lib", "geoname.gbnf")
-    unless File.exist?(grammar_path)
-      puts "❌ Error: Missing 'geoname.gbnf' file at root. Please create it first."
-      exit 1
-    end
-    grammar_content = File.read(grammar_path)
+    puts "☁️  Generating #{count} cities for #{country} via OpenRouter..."
+    puts "   Model: #{model}"
 
-    # Fetch the key from our local environment configurations
-    api_key = ENV["OPENROUTER_API_KEY"]
-    if api_key.blank?
-      puts "❌ Error: Missing OPENROUTER_API_KEY environment variable."
-      exit 1
-    end
-
-    puts "☁️ Connecting to OpenRouter cloud pipeline..."
-    puts "🌍 Target: Requesting #{count} factual cities for #{country}"
-
-    # Configure Faraday to point to the unified cloud gateway
     client = Faraday.new(url: "https://openrouter.ai") do |f|
       f.request :json
       f.response :json
       f.headers["Authorization"] = "Bearer #{api_key}"
-      f.headers["HTTP-Referer"] = "http://localhost:3000" # Required by OpenRouter spec
+      f.headers["HTTP-Referer"] = "http://localhost:3000"
       f.headers["X-Title"] = "GeoName Sprint"
-      f.options.timeout = 60 # Cloud models stream fast, 1 minute is plenty
+      f.options.timeout = 60
     end
 
-    # Build the payload using strict schema parameters rather than GBNF grammars
     payload = {
-      model: ENV["OPENROUTER_MODEL"],
+      model: model,
       messages: [
-          {
-            role: "system",
-            content: <<~TEXT
-              You are a strict, factual geographic database generator.
-              Your task is to return real, verified cities for the requested country.
+        {
+          role: "system",
+          content: <<~TEXT
+            You are a strict, factual geographic database generator.
+            Return real, verified cities for the requested country.
 
-              CRITICAL RULES:
-              1. Every city MUST have its true, distinct latitude and longitude (no repeating sequences).
-              2. Do NOT invent fake cities or city aliases.
-              3. Do NOT repeat the same phrase or nickname across different cities.
-              4. Stop generating immediately when you reach the requested count.
+            CRITICAL RULES:
+            1. Every city MUST have its true, distinct latitude and longitude.
+            2. Do NOT invent fake cities or city aliases.
+            3. Do NOT repeat the same alias across different cities.
+            4. Stop when you reach the requested count.
 
-              EXAMPLE FOR TURKEY:
-              [
-                {"name": "Ankara", "aliases": [], "map_latitude": 39.928889, "map_longitude":  32.854722},
-                {"name": "Istanbul", "aliases": ["İstanbul"], "map_latitude": 41.013611, "map_longitude":  28.955},
-                {"name": "Gaziantep", "aliases": ["Antep"], "map_latitude": 37.065833, "map_longitude": 37.378056},
-                {"name": "Şanlıurfa", "aliases": ["Urfa"], "map_latitude": 37.158333, "map_longitude": 38.791667},
-              ]
-            TEXT
-          },
-          {
-            role: "user",
-            content: "Generate an array containing exactly #{count} distinct, major real-world cities in #{country} following the required schema structure."
-          }
+            Respond with a JSON object containing a "cities" array:
+
+            {"cities": [
+              {"name": "Ankara", "aliases": [], "latitude": 39.928889, "longitude": 32.854722},
+              {"name": "Istanbul", "aliases": ["İstanbul"], "latitude": 41.013611, "longitude": 28.955},
+              {"name": "Gaziantep", "aliases": ["Antep"], "latitude": 37.065833, "longitude": 37.378056}
+            ]}
+          TEXT
+        },
+        {
+          role: "user",
+          content: "Generate an array of exactly #{count} distinct, major real-world cities in #{country} following the schema above."
+        }
       ],
-      temperature: 0.0, # Kill the creativity entirely to stop the loops
-
-      chat_template_kwargs: {
-        enable_thinking: false
-      },
-
-      response_format: {
-        type: "json_object",
-        schema: grammar_content
-      }
+      temperature: 0.0,
+      response_format: { type: "json_object" }
     }
 
     begin
@@ -86,29 +74,100 @@ namespace :geo do
 
       if response.success?
         raw_json_string = response.body.dig("choices", 0, "message", "content")
+          &.gsub(/```json\s*/i, "")
+          &.gsub(/```\s*/, "")
+          &.strip
 
-        # Clean up common markdown fences that cloud endpoints can sometimes append
-        raw_json_string = raw_json_string.gsub(/```json\s*/i, "").gsub(/```\s*/, "").strip
+        parsed = JSON.parse(raw_json_string)
+        cities = parsed["cities"]
 
-        # Double check parsing passes before committing to our staging directory
-        JSON.parse(raw_json_string)
+        unless cities.is_a?(Array) && cities.any?
+          puts "❌ Response missing a 'cities' array."
+          exit 1
+        end
 
-        File.write(file_path, raw_json_string)
+        File.write(file_path, JSON.pretty_generate(parsed))
+
         puts "============================================="
-        puts "✅ Cloud Verification Complete!"
-        puts "💾 Saved raw data to: #{file_path}"
-        puts "👉 Run your server and navigate to your Reading Canvas to inspect."
+        puts "✅ Generated #{cities.size} cities for #{country}"
+        puts "💾 Saved to: #{file_path}"
+        puts "👉 Run bin/rails 'geo:import_cities[#{country}]' to seed the database."
         puts "============================================="
       else
-        puts "❌ Cloud provider rejected request: #{response.status}"
-        puts "Details: #{response.body}"
+        puts "❌ Request failed: #{response.status}"
+        puts response.body
+        exit 1
       end
 
-    rescue JSON::ParserError
-      puts "❌ Failed to parse response string as valid JSON structure."
-      puts "Raw Content received: #{raw_json_string}"
+    rescue JSON::ParserError => e
+      puts "❌ Failed to parse response as JSON: #{e.message}"
+      puts "Raw content: #{raw_json_string}"
+      exit 1
     rescue => e
-      puts "❌ Connection or execution failure: #{e.message}"
+      puts "❌ Error: #{e.message}"
+      exit 1
     end
+  end
+
+  desc "Import staged city data into the database"
+  task :import_cities, [ :country ] => :environment do |_t, args|
+    country = args[:country] || "Turkey"
+    file_path = Rails.root.join("db", "raw_seeds", "pending_#{country.downcase}.json")
+
+    unless File.exist?(file_path)
+      puts "❌ No staging file at #{file_path}. Run geo:generate_cities first."
+      exit 1
+    end
+
+    data = JSON.parse(File.read(file_path))
+    cities = data["cities"]
+
+    unless cities.is_a?(Array) && cities.any?
+      puts "❌ Staging file does not contain a valid 'cities' array."
+      exit 1
+    end
+
+    puts "📦 Importing #{cities.size} cities for #{country}..."
+
+    quiz = Quiz.find_or_create_by!(slug: "#{country.downcase}-cities") do |q|
+      q.title = "#{country} Cities"
+      q.region = country
+      q.duration_seconds = 300
+      q.map_latitude = 39.0
+      q.map_longitude = 35.0
+      q.map_zoom = 6
+    end
+
+    imported = 0
+    skipped = 0
+
+    cities.each do |attrs|
+      normalized_name = CityNameNormalizer.call(attrs["name"])
+
+      if City.exists?(quiz: quiz, normalized_name: normalized_name)
+        puts "   ⏭  #{attrs["name"]} already exists, skipping"
+        skipped += 1
+        next
+      end
+
+      City.create!(
+        quiz: quiz,
+        name: attrs["name"],
+        normalized_name: normalized_name,
+        latitude: attrs["latitude"],
+        longitude: attrs["longitude"],
+        aliases: Array(attrs["aliases"])
+      )
+
+      imported += 1
+      puts "   ✓ #{attrs["name"]}"
+    end
+
+    puts "============================================="
+    puts "✅ Import complete for #{country}"
+    puts "   Created: #{imported} cities"
+    puts "   Skipped: #{skipped} (already exist)"
+    puts "   Quiz:    #{quiz.title} (#{quiz.cities.count} total cities)"
+    puts "============================================="
   end
 end
