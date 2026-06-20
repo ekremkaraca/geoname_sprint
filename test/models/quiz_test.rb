@@ -109,6 +109,12 @@ class QuizTest < ActiveSupport::TestCase
     assert_equal [ 42.7, 23.33 ], quiz.map_center
   end
 
+  test "map_center falls back to default when nil" do
+    quiz = Quiz.new(map_latitude: nil, map_longitude: nil)
+
+    assert_equal [ 39.0, 35.0 ], quiz.map_center
+  end
+
   test "map_zoom returns default zoom when nil" do
     quiz = Quiz.new(map_zoom: nil)
 
@@ -246,6 +252,32 @@ class QuizTest < ActiveSupport::TestCase
 
     assert_not quiz.valid?
     assert_includes quiz.errors[:duration_seconds], "can't be blank"
+  end
+
+  test "requires map_latitude" do
+    quiz = Quiz.new(
+      title: "No Latitude",
+      slug: "no-latitude",
+      region: "Test",
+      duration_seconds: 300,
+      map_longitude: 35.0
+    )
+
+    assert_not quiz.valid?
+    assert_includes quiz.errors[:map_latitude], "can't be blank"
+  end
+
+  test "requires map_longitude" do
+    quiz = Quiz.new(
+      title: "No Longitude",
+      slug: "no-longitude",
+      region: "Test",
+      duration_seconds: 300,
+      map_latitude: 39.0
+    )
+
+    assert_not quiz.valid?
+    assert_includes quiz.errors[:map_longitude], "can't be blank"
   end
 
   test "destroying quiz destroys associated cities" do
