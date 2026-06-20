@@ -7,7 +7,7 @@ class QuizGameplaysTest < ApplicationSystemTestCase
     fill_in "Enter a city...", with: "Sofia"
     send_keys :enter
 
-    assert_text "Found: 1"
+    assert_selector "[data-quiz-target=\"count\"]", text: "1"
     assert_text "✓ Sofia"
   end
 
@@ -17,7 +17,7 @@ class QuizGameplaysTest < ApplicationSystemTestCase
     fill_in "City guess", with: "Haskoy"
     send_keys :enter
 
-    assert_text "Found: 1"
+    assert_selector "[data-quiz-target=\"count\"]", text: "1"
     assert_text "✓ Haskovo"
   end
 
@@ -30,7 +30,7 @@ class QuizGameplaysTest < ApplicationSystemTestCase
     fill_in "City guess", with: "Sofia"
     send_keys :enter
 
-    assert_text "Found: 1"
+    assert_selector "[data-quiz-target=\"count\"]", text: "1"
     assert_selector "li", text: "✓ Sofia", count: 1
   end
 
@@ -40,7 +40,7 @@ class QuizGameplaysTest < ApplicationSystemTestCase
     fill_in "City guess", with: "Atlantis"
     send_keys :enter
 
-    assert_text "Found: 0"
+    assert_selector "[data-quiz-target=\"count\"]", text: "0"
     assert_no_text "✓ Atlantis"
   end
 
@@ -53,13 +53,14 @@ class QuizGameplaysTest < ApplicationSystemTestCase
     end
 
     assert_field "City guess", disabled: true
-    assert_text "Found: 3"
+    assert_selector "[data-quiz-target=\"count\"]", text: "3"
   end
 
   test "quiz expires when timer reaches zero" do
     visit quiz_path(quizzes(:bulgaria_short))
 
-    assert_text "Time left: 00:03"
+    assert_selector "[data-quiz-target=\"timer\"]"
+    assert_field "City guess", disabled: false
 
     sleep 4
 
@@ -84,7 +85,7 @@ class QuizGameplaysTest < ApplicationSystemTestCase
     fill_in "City guess", with: "Sofia"
     send_keys :enter
 
-    assert_text "Found: 1"
+    assert_selector "[data-quiz-target=\"count\"]", text: "1"
 
     assert_text "Time's up!", wait: 5
     assert_text "Missed Cities"
