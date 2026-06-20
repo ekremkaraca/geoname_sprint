@@ -21,7 +21,17 @@ class City < ApplicationRecord
 
   validate :aliases_are_unique_within_quiz
 
+  before_validation :normalize_aliases
+
   private
+
+  def normalize_aliases
+    return unless aliases.is_a?(Array)
+
+    self.aliases = aliases
+      .map { |value| CityNameNormalizer.call(value) }
+      .reject(&:blank?)
+  end
 
   def aliases_are_unique_within_quiz
     return if quiz.blank?
@@ -40,7 +50,8 @@ class City < ApplicationRecord
 
     quiz.cities.where.not(id: id).each do |city|
       other_keys = [
-        city.normalized_name, *Array(city.aliases)
+        city.normalized_name,
+        *Array(city.aliases).map { |a| CityNameNormalizer.call(a) }
       ]
 
       if (normalized_aliases & other_keys).any?

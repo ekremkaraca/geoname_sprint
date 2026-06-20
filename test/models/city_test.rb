@@ -79,6 +79,36 @@ class CityTest < ActiveSupport::TestCase
     assert_not city.valid?
   end
 
+  test "rejects un-normalized alias that conflicts with another city alias" do
+    city = cities(:varna)
+    city.aliases = [ "Haskoy" ]
+
+    assert_not city.valid?
+  end
+
+  test "normalizes aliases before validation" do
+    city = cities(:sofia)
+    city.aliases = [ "İstanbul" ]
+
+    city.valid?
+    assert_equal [ "istanbul" ], city.aliases
+  end
+
+  test "normalizes aliases on save" do
+    quiz = quizzes(:bulgaria)
+    city = City.create!(
+      quiz: quiz,
+      name: "Staging City",
+      normalized_name: "staging-city-#{Time.now.to_i}",
+      latitude: 40.0,
+      longitude: 25.0,
+      aliases: [ "İstanbul" ]
+    )
+
+    city.reload
+    assert_equal [ "istanbul" ], city.aliases
+  end
+
   test "aliases must be an array" do
     city = cities(:haskovo)
     city.aliases = "haskoy"
@@ -175,6 +205,21 @@ class CityTest < ActiveSupport::TestCase
       latitude: 40.0,
       longitude: 25.0,
       aliases: %w[ sofia ]
+    )
+
+    assert_not city.valid?
+    assert city.errors[:aliases].any? { |msg| msg.include?("must not conflict") }
+  end
+
+  test "rejects un-normalized alias that conflicts with another city normalized name" do
+    quiz = quizzes(:bulgaria)
+    city = City.new(
+      quiz: quiz,
+      name: "New City",
+      normalized_name: "new-city",
+      latitude: 40.0,
+      longitude: 25.0,
+      aliases: [ "Sofia" ]
     )
 
     assert_not city.valid?

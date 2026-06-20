@@ -34,6 +34,6 @@ cities.each do |attrs|
     city.latitude = attrs[:latitude]
     city.longitude = attrs[:longitude]
     city.population = attrs[:population]
-    city.aliases = attrs[:aliases].map { |name| CityNameNormalizer.call(name) }
+    city.aliases = attrs[:aliases]
   end
 end
